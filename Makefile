@@ -10,3 +10,6 @@ env: ## Set virtual env
 
 install: ## Install requirements
 	pip install -r requirements.txt
+
+run: ## Run app
+	python3 -m pvcscr
