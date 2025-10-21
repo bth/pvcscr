@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtCore import Qt, QRect, QPoint, QSize
+from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame
 from PySide6.QtGui import QRegion
 
@@ -15,11 +15,18 @@ class PvcScr(QMainWindow):
         self.frame.setFrameStyle(1)
         self.frame.setStyleSheet("QFrame { border: 3px solid red;}")
 
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.time)
+        self.timer.start(1000)
+
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
+
+    def time(self):
         empty_region = QRegion(QRect(QPoint(2,2), self.frame.size() - QSize(4, 4)), QRegion.RegionType.Rectangle)
         region = QRegion(QRect(QPoint(-2,-2), self.frame.size() + QSize(4, 4)), QRegion.RegionType.Rectangle)
         self.setMask(region - empty_region)
+
 
 def main():
     print("pvcscr")
