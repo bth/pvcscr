@@ -26,6 +26,7 @@ class PvcScr(QMainWindow):
 
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
+        self.repaint()
 
     def mouseMoveEvent(self, event):
         # Position relative à la fenêtre
