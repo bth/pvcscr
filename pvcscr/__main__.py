@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame
-from PySide6.QtGui import QRegion, QPainter, QColor
+from PySide6.QtGui import QRegion, QPainter, QColor, QCursor
 
 class PvcScr(QMainWindow):
     def __init__(self):
@@ -18,8 +18,8 @@ class PvcScr(QMainWindow):
         self.setMouseTracking(True)
         self.frame.setMouseTracking(True)
         self.timer = QTimer(self)
-        #self.timer.timeout.connect(self.time)
-        #self.timer.start(1000)
+        self.timer.timeout.connect(self.time)
+        self.timer.start(10)
         self.hole = QRect(0, 0, 0, 0)
         self.hole_width = 200
         self.hole_height = 100
@@ -30,13 +30,12 @@ class PvcScr(QMainWindow):
     def mouseMoveEvent(self, event):
         # Position relative à la fenêtre
         mouse_position = event.position().toPoint()
-        print(f"Position locale dans la fenêtre : {mouse_position.x()}, {mouse_position.y()}")
-        self.positionHole(mouse_position)
-        self.repaint()
+        #print(f"Position locale dans la fenêtre : {mouse_position.x()}, {mouse_position.y()}")
+        #self.positionHole(mouse_position)
+        #self.repaint()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
-        #empty_region = QRegion(QRect(QPoint(5,5), self.frame.size() - QSize(10, 10)), QRegion.RegionType.Rectangle)
         region = QRegion(QRect(QPoint(-2,-2), self.frame.size() + QSize(4, 4)), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
         self.setMask(region - empty_region)
@@ -48,6 +47,11 @@ class PvcScr(QMainWindow):
         #painter.setBrush(QColor(0, 255, 0))
         #painter.drawRect(self.hole)
 
+    def time(self):
+        global_pos = QCursor.pos()
+        local_pos_from_global = self.mapFromGlobal(global_pos)
+        #print(f"Position de la souris : ({local_pos_from_global.x()}, {local_pos_from_global.y()})")
+        self.positionHole(local_pos_from_global)
 
 def main():
     print("pvcscr")
