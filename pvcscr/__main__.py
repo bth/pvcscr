@@ -14,7 +14,7 @@ class PvcScr(QMainWindow):
         self.frame = QFrame(self)
         self.frame.setFrameStyle(1)
         #self.frame.setStyleSheet("QFrame { border: 5px solid red;}")
-        self.frame.setStyleSheet("QFrame { background-color: black;}")
+        self.frame.setStyleSheet("QFrame { background-color: rgba(0, 0, 0, 200); }")
         self.setMouseTracking(True)
         self.frame.setMouseTracking(True)
         self.timer = QTimer(self)
