@@ -12,4 +12,8 @@ install: ## Install requirements
 	pip install -r requirements.txt
 
 run: ## Run app
-	python3 -m pvcscr
+	python3 pvcscr.py
+
+create-bin: ## Create binary
+	pip install pyinstaller
+	pyinstaller --onefile --windowed pvcscr.py

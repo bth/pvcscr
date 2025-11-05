@@ -55,8 +55,6 @@ class PvcScr(QMainWindow):
         global_pos = QCursor.pos()
         local_pos_from_global = self.mapFromGlobal(global_pos)
         #print(f"Position de la souris : ({local_pos_from_global.x()}, {local_pos_from_global.y()})")
-
-
         self.positionHole(local_pos_from_global)
 
 def main():
