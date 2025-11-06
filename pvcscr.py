@@ -1,7 +1,7 @@
 import sys
-from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer
+from PySide6.QtCore import Qt, QRect, QPoint, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle
-from PySide6.QtGui import QRegion, QPainter, QColor, QCursor
+from PySide6.QtGui import QRegion, QCursor
 
 class PvcScr(QMainWindow):
     def __init__(self):
@@ -10,13 +10,9 @@ class PvcScr(QMainWindow):
         self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self.move(100, 100)
         self.frame = QFrame(self)
         self.frame.setFrameStyle(1)
-        #self.frame.setStyleSheet("QFrame { border: 5px solid red;}")
         self.frame.setStyleSheet("QFrame { background-color: rgba(0, 0, 0, 200); }")
-        self.setMouseTracking(True)
-        self.frame.setMouseTracking(True)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time)
         self.timer.start(10)
@@ -24,18 +20,10 @@ class PvcScr(QMainWindow):
         self.hole_width = 200
         self.hole_height = 100
         self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
-        print(f"Hauteur de la barre de titre sous Linux : {self.title_bar_height} pixels")
 
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
         self.repaint()
-
-    def mouseMoveEvent(self, event):
-        # Position relative à la fenêtre
-        mouse_position = event.position().toPoint()
-        #print(f"Position locale dans la fenêtre : {mouse_position.x()}, {mouse_position.y()}")
-        #self.positionHole(mouse_position)
-        #self.repaint()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
@@ -44,25 +32,15 @@ class PvcScr(QMainWindow):
         os_bar = QRegion(QRect(0, -self.title_bar_height, self.size().width(), self.title_bar_height), QRegion.RegionType.Rectangle)
         self.setMask(region - empty_region + os_bar)
 
-    def paintEvent(self, event):
-        super().paintEvent(event)
-        # DEBUG : display hole
-        #painter = QPainter(self)
-        #painter.setBrush(QColor(0, 255, 0))
-        #painter.drawRect(self.hole)
-
     def time(self):
         global_pos = QCursor.pos()
         local_pos_from_global = self.mapFromGlobal(global_pos)
-        #print(f"Position de la souris : ({local_pos_from_global.x()}, {local_pos_from_global.y()})")
         self.positionHole(local_pos_from_global)
 
 def main():
-    print("pvcscr")
     app = QApplication(sys.argv)
     window = PvcScr()
     window.show()
-    # Run the main Qt loop
     sys.exit(app.exec())
 
 if __name__ == "__main__":
