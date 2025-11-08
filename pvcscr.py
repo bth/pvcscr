@@ -13,30 +13,35 @@ class PvcScr(QMainWindow):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.frame = QFrame(self)
         #self.frame.setFrameStyle(1)
-        self.frame.setStyleSheet("QFrame { background-color: rgba(0, 0, 0, 0.5); }")
+        self.frame.setStyleSheet(f"QFrame {{ background-color: rgba(0, 0, 0, {self.opacity}); }}")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time)
         self.timer.start(10)
         self.hole = QRect(0, 0, 0, 0)
-        #self.hole_width = 200
-        self.hole_height = 100
         self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
 
     def initConfigFile(self):
+        DEFAULT_HOLE_WIDTH = 200
+        DEFAULT_HOLE_HEIGHT = 100
+        DEFAULT_OPACITY = 0.5
         user_path = os.path.join(os.path.expanduser("~"), ".pvcscr")
         os.makedirs(user_path, exist_ok=True)
         config_file = os.path.join(user_path, 'pvcscr.cfg')
         config = configparser.ConfigParser()
-        
+
         if not os.path.exists(config_file):
             config['DEFAULT'] = {
-                'hole_width': '200'
+                'hole_width': DEFAULT_HOLE_WIDTH,
+                'hole_height': DEFAULT_HOLE_HEIGHT,
+                'opacity': DEFAULT_OPACITY
             }
             with open(config_file, "w") as f:
                 config.write(f)
         
         config.read(config_file)
-        self.hole_width = config.getint('DEFAULT', 'hole_width', fallback=200)
+        self.hole_width = config.getint('DEFAULT', 'hole_width', fallback=DEFAULT_HOLE_WIDTH)
+        self.hole_height = config.getint('DEFAULT', 'hole_height', fallback=DEFAULT_HOLE_HEIGHT)
+        self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
 
 
     def resizeEvent(self, event):
