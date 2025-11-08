@@ -16,11 +16,12 @@ class PvcScr(QMainWindow):
         self.frame.setStyleSheet(f"QFrame {{ background-color: rgba(0, 0, 0, {self.opacity}); }}")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time)
-        self.timer.start(10)
+        self.timer.start(self.check_mouse_poll)
         self.hole = QRect(0, 0, 0, 0)
         self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
 
     def initConfigFile(self):
+        DEFAULT_CHECK_MOUSE_POLL = 10
         DEFAULT_HOLE_WIDTH = 200
         DEFAULT_HOLE_HEIGHT = 100
         DEFAULT_OPACITY = 0.5
@@ -31,6 +32,7 @@ class PvcScr(QMainWindow):
 
         if not os.path.exists(config_file):
             config['DEFAULT'] = {
+                'check_mouse_poll': DEFAULT_CHECK_MOUSE_POLL,
                 'hole_width': DEFAULT_HOLE_WIDTH,
                 'hole_height': DEFAULT_HOLE_HEIGHT,
                 'opacity': DEFAULT_OPACITY
@@ -39,6 +41,7 @@ class PvcScr(QMainWindow):
                 config.write(f)
         
         config.read(config_file)
+        self.check_mouse_poll = config.getint('DEFAULT', 'check_mouse_poll', fallback=DEFAULT_CHECK_MOUSE_POLL)
         self.hole_width = config.getint('DEFAULT', 'hole_width', fallback=DEFAULT_HOLE_WIDTH)
         self.hole_height = config.getint('DEFAULT', 'hole_height', fallback=DEFAULT_HOLE_HEIGHT)
         self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
