@@ -1,4 +1,4 @@
-import sys
+import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle
 from PySide6.QtGui import QRegion, QCursor
@@ -6,20 +6,38 @@ from PySide6.QtGui import QRegion, QCursor
 class PvcScr(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.initConfigFile()
         self.setWindowTitle("PvcScr")
         self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+        #self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.frame = QFrame(self)
-        self.frame.setFrameStyle(1)
-        self.frame.setStyleSheet("QFrame { background-color: rgba(0, 0, 0, 200); }")
+        #self.frame.setFrameStyle(1)
+        self.frame.setStyleSheet("QFrame { background-color: rgba(0, 0, 0, 0.5); }")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time)
         self.timer.start(10)
         self.hole = QRect(0, 0, 0, 0)
-        self.hole_width = 200
+        #self.hole_width = 200
         self.hole_height = 100
         self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
+
+    def initConfigFile(self):
+        user_path = os.path.join(os.path.expanduser("~"), ".pvcscr")
+        os.makedirs(user_path, exist_ok=True)
+        config_file = os.path.join(user_path, 'pvcscr.cfg')
+        config = configparser.ConfigParser()
+        
+        if not os.path.exists(config_file):
+            config['DEFAULT'] = {
+                'hole_width': '200'
+            }
+            with open(config_file, "w") as f:
+                config.write(f)
+        
+        config.read(config_file)
+        self.hole_width = config.getint('DEFAULT', 'hole_width', fallback=200)
+
 
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())

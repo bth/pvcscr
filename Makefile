@@ -14,6 +14,9 @@ install: ## Install requirements
 run: ## Run app
 	python3 pvcscr.py
 
+remove-config: ## Remove config
+	rm -fr ~/.pvcscr
+
 create-bin: ## Create binary
 	pip install pyinstaller
 	pyinstaller --onefile --windowed pvcscr.py
