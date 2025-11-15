@@ -15,14 +15,12 @@ class PvcScr(QMainWindow):
         self.frame.setFrameStyle(1)
         self.frame.setStyleSheet(f"QFrame {{ background-color: rgba(0, 0, 0, {self.opacity}); }}")
         self.timer = QTimer(self)
-        #self.timer.timeout.connect(self.time)
+        self.timer.timeout.connect(self.time)
         self.timer.start(self.check_mouse_poll)
         self.hole = QRect(0, 0, 0, 0)
-        self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
+        self.title_bar_height = 30
 
         self.bar = QFrame(self)
-        self.bar.setStyleSheet(f"QFrame {{ background-color: rgba(255, 0, 0, 255); }}")
-        self.bar.setGeometry(0, 0, 100, 40)
 
         self.buttons_layout = QHBoxLayout(self.bar)
         self.buttons_layout.addStretch()
@@ -74,17 +72,17 @@ class PvcScr(QMainWindow):
         self.hole_height = config.getint('DEFAULT', 'hole_height', fallback=DEFAULT_HOLE_HEIGHT)
         self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
 
-
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
+        self.bar.setGeometry(0, 0, event.size().width(), self.title_bar_height)
         self.repaint()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
-        region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
+        window_region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
-        os_bar = QRegion(QRect(0, -self.title_bar_height, self.size().width(), self.title_bar_height), QRegion.RegionType.Rectangle)
-        self.setMask(region - empty_region + os_bar)
+        bar_region = QRegion(QRect(0, 0, self.size().width(), self.title_bar_height), QRegion.RegionType.Rectangle)
+        self.setMask(window_region - empty_region + bar_region)
 
     def time(self):
         global_pos = QCursor.pos()
