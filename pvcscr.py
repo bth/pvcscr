@@ -23,22 +23,33 @@ class PvcScr(QMainWindow):
         self.bar = QFrame(self)
 
         self.buttons_layout = QHBoxLayout(self.bar)
+        self.buttons_layout.setContentsMargins(5, 0, 5, 0)
         self.buttons_layout.addStretch()
 
-        self.minimize_button = QPushButton("—")
-        self.minimize_button.setFixedSize(20, 20)
-        self.minimize_button.clicked.connect(self.showMinimized)
-        self.buttons_layout.addWidget(self.minimize_button)
+        button = QPushButton("↔")
+        button.setFixedSize(20, 20)
+        #self.minimize_button.clicked.connect(self.showMinimized)
+        self.buttons_layout.addWidget(button)
 
-        self.minimize_button = QPushButton("□")
-        self.minimize_button.setFixedSize(20, 20)
-        self.minimize_button.clicked.connect(self.toggleFullScreen)
-        self.buttons_layout.addWidget(self.minimize_button)
+        button = QPushButton("✥")
+        button.setFixedSize(20, 20)
+        #self.minimize_button.clicked.connect(self.showMinimized)
+        self.buttons_layout.addWidget(button)
 
-        self.minimize_button = QPushButton("✕")
-        self.minimize_button.setFixedSize(20, 20)
-        self.minimize_button.clicked.connect(self.close)
-        self.buttons_layout.addWidget(self.minimize_button)
+        button = QPushButton("—")
+        button.setFixedSize(20, 20)
+        button.clicked.connect(self.showMinimized)
+        self.buttons_layout.addWidget(button)
+
+        button = QPushButton("□")
+        button.setFixedSize(20, 20)
+        button.clicked.connect(self.toggleFullScreen)
+        self.buttons_layout.addWidget(button)
+
+        button = QPushButton("✕")
+        button.setFixedSize(20, 20)
+        button.clicked.connect(self.close)
+        self.buttons_layout.addWidget(button)
 
     def toggleFullScreen(self):
         if self.isFullScreen():
