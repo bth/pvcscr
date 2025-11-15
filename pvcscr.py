@@ -1,6 +1,6 @@
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle
+from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
 from PySide6.QtGui import QRegion, QCursor
 
 class PvcScr(QMainWindow):
@@ -8,17 +8,45 @@ class PvcScr(QMainWindow):
         super().__init__()
         self.initConfigFile()
         self.setWindowTitle("PvcScr")
-        self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         #self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.frame = QFrame(self)
-        #self.frame.setFrameStyle(1)
+        self.frame.setFrameStyle(1)
         self.frame.setStyleSheet(f"QFrame {{ background-color: rgba(0, 0, 0, {self.opacity}); }}")
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.time)
+        #self.timer.timeout.connect(self.time)
         self.timer.start(self.check_mouse_poll)
         self.hole = QRect(0, 0, 0, 0)
         self.title_bar_height = self.style().pixelMetric(QStyle.PM_TitleBarHeight)
+
+        self.bar = QFrame(self)
+        self.bar.setStyleSheet(f"QFrame {{ background-color: rgba(255, 0, 0, 255); }}")
+        self.bar.setGeometry(0, 0, 100, 40)
+
+        self.buttons_layout = QHBoxLayout(self.bar)
+        self.buttons_layout.addStretch()
+
+        self.minimize_button = QPushButton("—")
+        self.minimize_button.setFixedSize(20, 20)
+        self.minimize_button.clicked.connect(self.showMinimized)
+        self.buttons_layout.addWidget(self.minimize_button)
+
+        self.minimize_button = QPushButton("□")
+        self.minimize_button.setFixedSize(20, 20)
+        self.minimize_button.clicked.connect(self.toggleFullScreen)
+        self.buttons_layout.addWidget(self.minimize_button)
+
+        self.minimize_button = QPushButton("✕")
+        self.minimize_button.setFixedSize(20, 20)
+        self.minimize_button.clicked.connect(self.close)
+        self.buttons_layout.addWidget(self.minimize_button)
+
+    def toggleFullScreen(self):
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
 
     def initConfigFile(self):
         DEFAULT_CHECK_MOUSE_POLL = 10
