@@ -1,6 +1,6 @@
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QWidget
 from PySide6.QtGui import QRegion, QCursor
 
 class PvcScr(QMainWindow):
@@ -26,14 +26,16 @@ class PvcScr(QMainWindow):
         self.buttons_layout.setContentsMargins(5, 0, 5, 0)
         self.buttons_layout.addStretch()
 
+        self.move_label = QLabel("✥")
+        self.move_label.setFixedSize(20, 20)
+        self.move_label.setToolTip("Move window")
+        self.move_label.setAlignment(Qt.AlignCenter)
+        self.move_label.setStyleSheet("QLabel { background-color: green;} QLabel:hover { background-color: red;}")
+        self.buttons_layout.addWidget(self.move_label)
+
         button = QPushButton("↔")
         button.setFixedSize(20, 20)
-        #self.minimize_button.clicked.connect(self.showMinimized)
-        self.buttons_layout.addWidget(button)
-
-        button = QPushButton("✥")
-        button.setFixedSize(20, 20)
-        #self.minimize_button.clicked.connect(self.showMinimized)
+        #self.button.clicked.connect(self.showMinimized)
         self.buttons_layout.addWidget(button)
 
         button = QPushButton("—")
@@ -99,6 +101,11 @@ class PvcScr(QMainWindow):
         global_pos = QCursor.pos()
         local_pos_from_global = self.mapFromGlobal(global_pos)
         self.positionHole(local_pos_from_global)
+
+    def mouseMoveEvent(self, event):
+        pos_in_window = self.move_label.mapTo(self, QPoint(0, 0))
+        print(f"{pos_in_window}")
+        self.move(event.globalPosition().toPoint() - pos_in_window)
 
 def main():
     app = QApplication(sys.argv)
