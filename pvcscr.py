@@ -4,6 +4,11 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLay
 from PySide6.QtGui import QRegion, QCursor, QResizeEvent
 
 class PvcScr(QMainWindow):
+
+    BUTTON_SIZE = 20
+    BUTTON_SPACE = 5
+    NUMBER_OF_BUTTONS = 5
+
     def __init__(self):
         super().__init__()
         self.initConfigFile()
@@ -20,37 +25,37 @@ class PvcScr(QMainWindow):
         self.hole = QRect(0, 0, 0, 0)
 
         self.bar = QFrame(self)
-        self.bar_width = 30*5
-        self.bar_height = 30
+        self.bar_width = self.NUMBER_OF_BUTTONS * (self.BUTTON_SIZE + self.BUTTON_SPACE)
+        self.bar_height = self.BUTTON_SIZE + (self.BUTTON_SPACE * 2)
         self.bar_position = Qt.AlignRight
 
         self.buttons_layout = QHBoxLayout(self.bar)
-        self.buttons_layout.setContentsMargins(5, 0, 5, 0)
+        self.buttons_layout.setContentsMargins(self.BUTTON_SPACE, 0, self.BUTTON_SPACE, 0)
 
         self.move_label = QLabel("✥")
-        self.move_label.setFixedSize(20, 20)
+        self.move_label.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         self.move_label.setToolTip("Move window")
         self.move_label.setAlignment(Qt.AlignCenter)
         self.move_label.setStyleSheet("QLabel { background-color: white;}")
         self.buttons_layout.addWidget(self.move_label)
 
         button = QPushButton("↔")
-        button.setFixedSize(20, 20)
+        button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         button.clicked.connect(self.toggleBarPosition)
         self.buttons_layout.addWidget(button)
 
         button = QPushButton("—")
-        button.setFixedSize(20, 20)
+        button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         button.clicked.connect(self.showMinimized)
         self.buttons_layout.addWidget(button)
 
         button = QPushButton("□")
-        button.setFixedSize(20, 20)
+        button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         button.clicked.connect(self.toggleFullScreen)
         self.buttons_layout.addWidget(button)
 
         button = QPushButton("✕")
-        button.setFixedSize(20, 20)
+        button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         button.clicked.connect(self.close)
         self.buttons_layout.addWidget(button)
 
@@ -91,13 +96,11 @@ class PvcScr(QMainWindow):
         self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
 
     def resizeEvent(self, event):
-        print("resizeEvent")
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
         bar_x = 0
         if self.bar_position == Qt.AlignRight:
             bar_x = event.size().width() - self.bar_width
         self.bar.setGeometry(bar_x, 0, self.bar_width, self.bar_height)
-        #self.repaint()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
