@@ -1,7 +1,7 @@
 import subprocess
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton, QHBoxLayout, QLabel
+from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton, QHBoxLayout, QLabel, QSizeGrip
 from PySide6.QtGui import QRegion, QCursor, QResizeEvent
 
 class PvcScr(QMainWindow):
@@ -67,6 +67,11 @@ class PvcScr(QMainWindow):
         button.clicked.connect(self.close)
         self.buttons_layout.addWidget(button)
 
+        self.grip_tl = QSizeGrip(self)
+        self.grip_tl.setStyleSheet("background-color: red;")
+        self.grip_tl.resize(20, 20)
+        self.grip_tl.move(0, 0)
+
     def toggleBarPosition(self):
         self.bar_position = Qt.AlignLeft if self.bar_position == Qt.AlignRight else Qt.AlignRight
         self.resizeEvent(QResizeEvent(self.size(), self.size()))
@@ -122,7 +127,7 @@ class PvcScr(QMainWindow):
         window_region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
         bar_region = QRegion(self.bar.geometry());
-        self.setMask(window_region - empty_region + bar_region)
+        #self.setMask(window_region - empty_region + bar_region)
 
     def time(self):
         global_pos = QCursor.pos()
