@@ -1,7 +1,7 @@
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QWidget, QSpacerItem, QSizePolicy
-from PySide6.QtGui import QRegion, QCursor
+from PySide6.QtGui import QRegion, QCursor, QResizeEvent
 
 class PvcScr(QMainWindow):
     def __init__(self):
@@ -18,15 +18,14 @@ class PvcScr(QMainWindow):
         self.timer.timeout.connect(self.time)
         self.timer.start(self.check_mouse_poll)
         self.hole = QRect(0, 0, 0, 0)
-        self.title_bar_height = 30
 
         self.bar = QFrame(self)
+        self.bar_width = 30*5
+        self.bar_height = 30
+        self.bar_position = Qt.AlignRight
 
         self.buttons_layout = QHBoxLayout(self.bar)
         self.buttons_layout.setContentsMargins(5, 0, 5, 0)
-        #self.buttons_layout.addStretch()
-        self.left_stretch = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.buttons_layout.addSpacerItem(self.left_stretch)
 
         self.move_label = QLabel("✥")
         self.move_label.setFixedSize(20, 20)
@@ -56,7 +55,8 @@ class PvcScr(QMainWindow):
         self.buttons_layout.addWidget(button)
 
     def toggleBarPosition(self):
-        pass
+        self.bar_position = Qt.AlignLeft if self.bar_position == Qt.AlignRight else Qt.AlignRight
+        self.resizeEvent(QResizeEvent(self.size(), self.size()))
 
     def toggleFullScreen(self):
         if self.isFullScreen():
@@ -91,15 +91,19 @@ class PvcScr(QMainWindow):
         self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
 
     def resizeEvent(self, event):
+        print("resizeEvent")
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
-        self.bar.setGeometry(0, 0, event.size().width(), self.title_bar_height)
-        self.repaint()
+        bar_x = 0
+        if self.bar_position == Qt.AlignRight:
+            bar_x = event.size().width() - self.bar_width
+        self.bar.setGeometry(bar_x, 0, self.bar_width, self.bar_height)
+        #self.repaint()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
         window_region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
-        bar_region = QRegion(QRect(0, 0, self.size().width(), self.title_bar_height), QRegion.RegionType.Rectangle)
+        bar_region = QRegion(QRect(0, 0, self.size().width(), self.bar_height), QRegion.RegionType.Rectangle)
         self.setMask(window_region - empty_region + bar_region)
 
     def time(self):
