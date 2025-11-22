@@ -106,7 +106,7 @@ class PvcScr(QMainWindow):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
         window_region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
-        bar_region = QRegion(QRect(0, 0, self.size().width(), self.bar_height), QRegion.RegionType.Rectangle)
+        bar_region = QRegion(self.bar.geometry());
         self.setMask(window_region - empty_region + bar_region)
 
     def time(self):
