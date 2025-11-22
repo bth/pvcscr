@@ -101,6 +101,7 @@ class PvcScr(QMainWindow):
                 'opacity': DEFAULT_OPACITY
             }
             with open(self.config_file, "w") as f:
+                f.write("# Configuration changes require a restart of the application to take effect.\n")
                 config.write(f)
         
         config.read(self.config_file)
