@@ -1,6 +1,6 @@
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QWidget, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton, QHBoxLayout, QLabel
 from PySide6.QtGui import QRegion, QCursor, QResizeEvent
 
 class PvcScr(QMainWindow):
