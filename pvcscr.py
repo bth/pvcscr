@@ -41,6 +41,7 @@ class PvcScr(QMainWindow):
 
         button = QPushButton("↔")
         button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+        button.setToolTip("Move buttons")
         button.clicked.connect(self.toggleBarPosition)
         self.buttons_layout.addWidget(button)
 
