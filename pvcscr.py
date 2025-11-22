@@ -1,3 +1,4 @@
+import subprocess
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton, QHBoxLayout, QLabel
@@ -7,7 +8,7 @@ class PvcScr(QMainWindow):
 
     BUTTON_SIZE = 20
     BUTTON_SPACE = 5
-    NUMBER_OF_BUTTONS = 5
+    NUMBER_OF_BUTTONS = 6
 
     def __init__(self):
         super().__init__()
@@ -45,6 +46,12 @@ class PvcScr(QMainWindow):
         button.clicked.connect(self.toggleBarPosition)
         self.buttons_layout.addWidget(button)
 
+        button = QPushButton("⚙️")
+        button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+        button.setToolTip("Edit configuration")
+        button.clicked.connect(self.openConfiguration)
+        self.buttons_layout.addWidget(button)
+
         button = QPushButton("—")
         button.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         button.clicked.connect(self.showMinimized)
@@ -64,6 +71,12 @@ class PvcScr(QMainWindow):
         self.bar_position = Qt.AlignLeft if self.bar_position == Qt.AlignRight else Qt.AlignRight
         self.resizeEvent(QResizeEvent(self.size(), self.size()))
 
+    def openConfiguration(self):
+        if sys.platform == "win32":
+            subprocess.run(["start", self.config_file], shell=True)
+        else:
+            subprocess.run(["xdg-open", self.config_file])
+
     def toggleFullScreen(self):
         if self.isFullScreen():
             self.showNormal()
@@ -77,20 +90,20 @@ class PvcScr(QMainWindow):
         DEFAULT_OPACITY = 0.5
         user_path = os.path.join(os.path.expanduser("~"), ".pvcscr")
         os.makedirs(user_path, exist_ok=True)
-        config_file = os.path.join(user_path, 'pvcscr.cfg')
+        self.config_file = os.path.join(user_path, 'pvcscr.cfg')
         config = configparser.ConfigParser()
 
-        if not os.path.exists(config_file):
+        if not os.path.exists(self.config_file):
             config['DEFAULT'] = {
                 'check_mouse_poll': DEFAULT_CHECK_MOUSE_POLL,
                 'hole_width': DEFAULT_HOLE_WIDTH,
                 'hole_height': DEFAULT_HOLE_HEIGHT,
                 'opacity': DEFAULT_OPACITY
             }
-            with open(config_file, "w") as f:
+            with open(self.config_file, "w") as f:
                 config.write(f)
         
-        config.read(config_file)
+        config.read(self.config_file)
         self.check_mouse_poll = config.getint('DEFAULT', 'check_mouse_poll', fallback=DEFAULT_CHECK_MOUSE_POLL)
         self.hole_width = config.getint('DEFAULT', 'hole_width', fallback=DEFAULT_HOLE_WIDTH)
         self.hole_height = config.getint('DEFAULT', 'hole_height', fallback=DEFAULT_HOLE_HEIGHT)
