@@ -1,6 +1,6 @@
 import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QStyle, QBoxLayout, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QWidget, QSpacerItem, QSizePolicy
 from PySide6.QtGui import QRegion, QCursor
 
 class PvcScr(QMainWindow):
@@ -24,7 +24,9 @@ class PvcScr(QMainWindow):
 
         self.buttons_layout = QHBoxLayout(self.bar)
         self.buttons_layout.setContentsMargins(5, 0, 5, 0)
-        self.buttons_layout.addStretch()
+        #self.buttons_layout.addStretch()
+        self.left_stretch = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.buttons_layout.addSpacerItem(self.left_stretch)
 
         self.move_label = QLabel("✥")
         self.move_label.setFixedSize(20, 20)
@@ -35,7 +37,7 @@ class PvcScr(QMainWindow):
 
         button = QPushButton("↔")
         button.setFixedSize(20, 20)
-        #self.button.clicked.connect(self.showMinimized)
+        button.clicked.connect(self.toggleBarPosition)
         self.buttons_layout.addWidget(button)
 
         button = QPushButton("—")
@@ -52,6 +54,9 @@ class PvcScr(QMainWindow):
         button.setFixedSize(20, 20)
         button.clicked.connect(self.close)
         self.buttons_layout.addWidget(button)
+
+    def toggleBarPosition(self):
+        pass
 
     def toggleFullScreen(self):
         if self.isFullScreen():
