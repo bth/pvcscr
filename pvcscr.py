@@ -30,7 +30,7 @@ class PvcScr(QMainWindow):
         self.move_label.setFixedSize(20, 20)
         self.move_label.setToolTip("Move window")
         self.move_label.setAlignment(Qt.AlignCenter)
-        self.move_label.setStyleSheet("QLabel { background-color: green;} QLabel:hover { background-color: red;}")
+        self.move_label.setStyleSheet("QLabel { background-color: white;}")
         self.buttons_layout.addWidget(self.move_label)
 
         button = QPushButton("↔")
@@ -103,9 +103,10 @@ class PvcScr(QMainWindow):
         self.positionHole(local_pos_from_global)
 
     def mouseMoveEvent(self, event):
-        pos_in_window = self.move_label.mapTo(self, QPoint(0, 0))
-        print(f"{pos_in_window}")
-        self.move(event.globalPosition().toPoint() - pos_in_window)
+        position_of_label_in_window = self.move_label.mapTo(self, QPoint(self.move_label.width()/2, self.move_label.height()/2))
+        position_of_mouse = event.globalPosition()
+        #if self.move_label.geometry().contains(event.position().toPoint()):
+        self.move(position_of_mouse.toPoint() - position_of_label_in_window)
 
 def main():
     app = QApplication(sys.argv)
