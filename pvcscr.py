@@ -154,7 +154,6 @@ class PvcScr(QMainWindow):
     def mouseMoveEvent(self, event):
         position_of_label_in_window = self.move_label.mapTo(self, QPoint(self.move_label.width()/2, self.move_label.height()/2))
         position_of_mouse = event.globalPosition()
-        #if self.move_label.geometry().contains(event.position().toPoint()):
         self.move(position_of_mouse.toPoint() - position_of_label_in_window)
 
 def main():
