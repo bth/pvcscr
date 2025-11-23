@@ -68,9 +68,16 @@ class PvcScr(QMainWindow):
         self.buttons_layout.addWidget(button)
 
         self.grip_tl = QSizeGrip(self)
-        self.grip_tl.setStyleSheet("background-color: red;")
-        self.grip_tl.resize(20, 20)
-        self.grip_tl.move(0, 0)
+        self.grip_tl.resize(self.BUTTON_SPACE, self.BUTTON_SPACE)
+
+        self.grip_tr = QSizeGrip(self)
+        self.grip_tr.resize(self.BUTTON_SPACE, self.BUTTON_SPACE)
+
+        self.grip_bl = QSizeGrip(self)
+        self.grip_bl.resize(self.BUTTON_SPACE, self.BUTTON_SPACE)
+        
+        self.grip_br = QSizeGrip(self)
+        self.grip_br.resize(self.BUTTON_SPACE, self.BUTTON_SPACE)
 
     def toggleBarPosition(self):
         self.bar_position = Qt.AlignLeft if self.bar_position == Qt.AlignRight else Qt.AlignRight
@@ -115,19 +122,29 @@ class PvcScr(QMainWindow):
         self.hole_height = config.getint('DEFAULT', 'hole_height', fallback=DEFAULT_HOLE_HEIGHT)
         self.opacity = config.getfloat('DEFAULT', 'opacity', fallback=DEFAULT_OPACITY)
 
+    def positionGrips(self):
+        self.grip_tl.move(0, 0)
+        self.grip_tr.move(self.frame.width() - self.BUTTON_SPACE, 0)
+        self.grip_bl.move(0, self.frame.height() - self.BUTTON_SPACE)
+        self.grip_br.move(self.frame.width() - self.BUTTON_SPACE, self.frame.height() - self.BUTTON_SPACE)
+
     def resizeEvent(self, event):
         self.frame.setGeometry(0, 0, event.size().width(), event.size().height())
         bar_x = 0
         if self.bar_position == Qt.AlignRight:
             bar_x = event.size().width() - self.bar_width
         self.bar.setGeometry(bar_x, 0, self.bar_width, self.bar_height)
+        self.positionGrips()
 
     def positionHole(self, mouse_position):
         self.hole = QRect(mouse_position.x() - self.hole_width/2, mouse_position.y() - self.hole_height/2, self.hole_width, self.hole_height)
         window_region = QRegion(QRect(QPoint(0, 0), self.size()), QRegion.RegionType.Rectangle)
         empty_region = QRegion(self.hole, QRegion.RegionType.Rectangle)
         bar_region = QRegion(self.bar.geometry());
-        #self.setMask(window_region - empty_region + bar_region)
+        grips_region = QRegion()
+        if not self.isFullScreen() :
+            grips_region = QRegion(self.grip_tl.geometry()) + QRegion(self.grip_tr.geometry()) + QRegion(self.grip_bl.geometry()) + QRegion(self.grip_br.geometry())
+        self.setMask(window_region - empty_region + bar_region + grips_region)
 
     def time(self):
         global_pos = QCursor.pos()
