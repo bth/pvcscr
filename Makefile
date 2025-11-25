@@ -18,5 +18,6 @@ remove-config: ## Remove config
 	rm -fr ~/.pvcscr
 
 create-bin: ## Create binary
+	python3 generate_version_file.py
 	pip install pyinstaller
 	pyinstaller --onefile --windowed pvcscr.py
