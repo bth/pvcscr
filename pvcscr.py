@@ -3,6 +3,7 @@ import sys, os, configparser
 from PySide6.QtCore import Qt, QRect, QPoint, QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton, QHBoxLayout, QLabel, QSizeGrip
 from PySide6.QtGui import QRegion, QCursor, QResizeEvent
+from version import VERSION
 
 class PvcScr(QMainWindow):
 
@@ -12,6 +13,7 @@ class PvcScr(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        print(f"{VERSION}")
         self.initConfigFile()
         self.setWindowTitle("PvcScr")
         self.setWindowFlags(self.windowFlags() | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
