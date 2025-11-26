@@ -1,0 +1,15 @@
+name: Create bin Windows
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+    - run: echo "This job's status is ${{ job.status }}."
