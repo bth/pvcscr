@@ -2,6 +2,8 @@
 
 Adds an overlay window that darkens the screen except for the area around the mouse cursor.
 
+![Demo](./doc/demo.gif)
+
 ## Download
 
 Get the latest version for **Windows** or **Linux** on https://github.com/bth/pvcscr/releases
