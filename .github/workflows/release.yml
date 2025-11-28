@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install make
+      run: choco install make -y
+
+    - name: Install deps
+      run: make install
+
+    - name: Create binary
+      run: make create-bin
+
+    - name: Upload executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: pvcscr-windows
+        path: dist/pvcscr.exe
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install deps
+      run: make install
+
+    - name: Create binary
+      run: make create-bin
+
+    - name: Upload executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: pvcscr-linux
+        path: dist/pvcscr
+
+  release:
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Windows executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/pvcscr-windows/pvcscr.exe
+          asset_name: pvcscr-windows.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/pvcscr-linux/pvcscr
+          asset_name: pvcscr-linux
+          asset_content_type: application/octet-stream
