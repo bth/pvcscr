@@ -21,7 +21,6 @@ class PvcScr(QMainWindow):
         self.initConfigFile()
         self.setWindowTitle("PvcScr")
         self.setWindowFlags(self.windowFlags() | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
-        #self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.frame = QFrame(self)
         self.frame.setFrameStyle(1)
