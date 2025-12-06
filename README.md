@@ -30,7 +30,7 @@ make env
   ```
   * On Windows:
   ```bash
-  .venv/bin/activate.bat
+  .venv\Scripts\activate.bat
   ```
 4. Install dependencies:
 ```bash
