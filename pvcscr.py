@@ -35,6 +35,7 @@ class PvcScr(QMainWindow):
         self.bar_width = self.NUMBER_OF_BUTTONS * (self.BUTTON_SIZE + self.BUTTON_SPACE)
         self.bar_height = self.BUTTON_SIZE + (self.BUTTON_SPACE * 2)
         self.bar_position = Qt.AlignRight
+        self.bar.setStyleSheet(f"QPushButton, QLabel {{ background-color: white; color: black; border-radius: 0;}}")
 
         self.buttons_layout = QHBoxLayout(self.bar)
         self.buttons_layout.setContentsMargins(self.BUTTON_SPACE, 0, self.BUTTON_SPACE, 0)
@@ -43,7 +44,6 @@ class PvcScr(QMainWindow):
         self.move_label.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
         self.move_label.setToolTip("Move window")
         self.move_label.setAlignment(Qt.AlignCenter)
-        self.move_label.setStyleSheet("QLabel { background-color: white;}")
         self.buttons_layout.addWidget(self.move_label)
 
         button = QPushButton("↔")
